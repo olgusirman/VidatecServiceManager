@@ -7,11 +7,18 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 public class VidatecMockService: VidatecService {
     
+    func stubbedResponse(_ filename: String) -> Data! {
+        let path = Bundle.module.path(forResource: filename, ofType: "json")
+        return (try? Data(contentsOf: URL(fileURLWithPath: path!)))
+    }
+    
     public override func getRooms() -> AnyPublisher<[Room], VidatecService.Error> {
         return Just(stubbedResponse("rooms"))
+            .delay(for: 2.0, scheduler: RunLoop.main)
             .tryMap { data in
                 if let data = data {
                     return data
@@ -36,6 +43,7 @@ public class VidatecMockService: VidatecService {
     
     public override func getPeoples() -> AnyPublisher<[Person], VidatecService.Error> {
         return Just(stubbedResponse("people"))
+            .delay(for: 2.0, scheduler: RunLoop.main)
             .tryMap { data in
                 if let data = data {
                     return data
