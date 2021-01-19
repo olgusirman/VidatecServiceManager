@@ -3,6 +3,8 @@ import Combine
 @testable import VidatecServiceManager
 
 final class VidatecServiceManagerTests: XCTestCase {
+    
+    // MARK: - Sample tests
     func testExample() {
         XCTAssertEqual(VidatecServiceManager().text, "Hello, World!")
     }
@@ -14,12 +16,14 @@ final class VidatecServiceManagerTests: XCTestCase {
     // MARK: - Unit Tests
     
     func testPeopleMockService() {
+        
+        // Given
         let service = VidatecMockService()
         var person: Person?
         var subscriptions = Set<AnyCancellable>()
-        
         let expectation = self.expectation(description: "Waiting for the getPeoples call to complete.")
         
+        // When
         service.getPeoples()
             .sink { completion in
                 expectation.fulfill()
@@ -27,6 +31,7 @@ final class VidatecServiceManagerTests: XCTestCase {
                 person = persons.first
             }.store(in: &subscriptions)
         
+        // Then
         waitForExpectations(timeout: 5) { error in
             XCTAssertNil(error)
             XCTAssertEqual(person?.firstName, "Jan")
@@ -34,12 +39,14 @@ final class VidatecServiceManagerTests: XCTestCase {
     }
     
     func testRoomsMockService() {
+        
+        // Given
         let service = VidatecMockService()
         var firstRoom: Room?
         var subscriptions = Set<AnyCancellable>()
-        
         let expectation = self.expectation(description: "Waiting for the getPeoples call to complete.")
         
+        // When
         service.getRooms()
             .sink { completion in
                 expectation.fulfill()
@@ -47,6 +54,7 @@ final class VidatecServiceManagerTests: XCTestCase {
                 firstRoom = rooms.first
             }.store(in: &subscriptions)
         
+        // Then
         waitForExpectations(timeout: 5) { error in
             XCTAssertNil(error)
             XCTAssertEqual(firstRoom?.name, "pixel")
