@@ -8,6 +8,18 @@ public protocol VidatecServiceType {
 
 public class VidatecService: VidatecServiceType {
     
+    public enum Configuration {
+        case dev
+        case prod
+    }
+    
+    public var baseUrl: URL {
+        guard let url = URL(string: VidatecService.baseHost) else {
+            fatalError("baseHost URL format is wrong?!")
+        }
+        return url
+    }
+    
     // MARK: - Properties
     /// Session
     fileprivate let session: URLSession
@@ -15,13 +27,27 @@ public class VidatecService: VidatecServiceType {
     /// A shared JSON decoder to use in calls.
     let decoder: JSONDecoder
     
+    let configuration: Configuration
+    
     /// Session Queue
     private let apiQueue = DispatchQueue(label: "VidatecService", qos: .default, attributes: .concurrent)
-    private static let baseHost = "5cc736f4ae1431001472e333.mockapi.io/api/v1"
+    static var baseHost: String = ""
     
-    public init(session: URLSession = .shared, decoder: JSONDecoder = .init()) {
+    public init(session: URLSession = .shared, decoder: JSONDecoder = .init(), with configuration: VidatecService.Configuration = .prod) {
         self.session = session
         self.decoder = decoder
+        self.configuration = configuration
+        
+        configureEnvironment(configuration: configuration)
+    }
+    
+    func configureEnvironment(configuration: Configuration) {
+        switch configuration {
+        case .dev:
+            VidatecService.baseHost = "5cc736f4ae1431001472e333.mockapi.io/api/v1"
+        case .prod:
+            VidatecService.baseHost = "5cc736f4ae1431001472e333.mockapi.io/api/v1"
+        }
     }
     
     /// MARK: Network Errors.

@@ -11,6 +11,7 @@
 //   let person = try Person(json)
 
 import Foundation
+import UIKit
 
 // MARK: - Person
 public struct Person: Codable, Identifiable {
@@ -21,6 +22,20 @@ public struct Person: Codable, Identifiable {
     
     public var name: String {
         "\(firstName ?? "")  \(lastName ?? "")"
+    }
+    
+    public var isEmailValid: Bool {
+        if let url = URL(string: "mailto:\(email ?? "")"), UIApplication.shared.canOpenURL(url) {
+            return true
+        }
+        return false
+    }
+    
+    public var validatedEmail: URL? {
+        if isEmailValid {
+            return URL(string: "mailto:\(email ?? "")")!
+        }
+        return nil
     }
 }
 
